@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Chat from './Chat';
+import ApiKeyModal from './ApiKeyModal';
+import './App.css'
 
 function App() {
+  const [apiKey, setApiKey] = useState('');
+  const [chats, setChats] = useState([]);
+
+  const addNewChat = () => {
+    const newChatId = chats.length + 1;
+    setChats([...chats, { id: newChatId, messages: [] }]);
+  };
+
+  const deleteChat = (chatId) => {
+    setChats(chats.filter(chat => chat.id !== chatId));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!apiKey && <ApiKeyModal setApiKey={setApiKey} />}
+      <button onClick={addNewChat}>New Chat</button>
+      {chats.map(chat => (
+        <Chat key={chat.id} chatId={chat.id} apiKey={apiKey} deleteChat={deleteChat} />
+      ))}
     </div>
   );
 }
